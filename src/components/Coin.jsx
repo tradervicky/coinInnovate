@@ -3,10 +3,11 @@ import axios from 'axios';
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { fetchCryptoData } from '../config/apiUtils';
+import { useCurrency } from '../context/CurrencyContext';
 import LineChart from './LineChart';
 function Coin() {
 
- 
+
 
   
   
@@ -24,10 +25,7 @@ function Coin() {
         
         <div className="p-5 mt-10 w-[70%] border-l-1">
             <LineChart/>
-            <button>24 Hours</button>
-            <button>30 Days</button>
-            <button>3 Months</button>
-            <button>1 Years</button>
+            
         </div>
     </div>
   )

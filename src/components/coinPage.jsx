@@ -4,21 +4,24 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { IoMdArrowDropupCircle } from "react-icons/io";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
+import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
 const CoinPage = () => {
+  const navigate = useNavigate()
   const [cryptoData, setCryptoData] = useState(null);
   const [page, setPage] =useState(1)
  
   const {selectedCurrency} = useCurrency();
+
 const convertPrice = (price) => {
   const parsedPrice = parseFloat(price);
 
   if (!isNaN(parsedPrice)) {
     switch (selectedCurrency) {
       case "usd":
-        return (parsedPrice * 0.012).toFixed(0);
+        return (parsedPrice * 0.012).toFixed(2);
       case "euro":
-        return (parsedPrice * 0.011).toFixed(0);
+        return (parsedPrice * 0.011).toFixed(2);
       
       default:
         return parsedPrice.toFixed(2);
@@ -63,6 +66,10 @@ const currencySymbol = (symbol)=>{
     }
     fetchData()
   },[])
+  const handleCoin = (id)=>{
+    
+    
+  }
   
    
   return (
@@ -79,7 +86,7 @@ const currencySymbol = (symbol)=>{
         </thead>
         <tbody>
           {cryptoData && cryptoData[0]?.slice(page-1,page+9).map((data, index)=>
-          <tr className='bg-gray-100' key={index}>
+          <tr className='bg-gray-100' key={index} onClick={()=>handleCoin(data.id)}>
              
             <td className='py-2 px-4 border-b text-gray-800 text-left flex items-center gap-2 cursor-pointer'>
               <img className='w-10 h-10 rounded-full' src={data?.image} alt="" />
