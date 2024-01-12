@@ -1,20 +1,49 @@
 
-import React from "react";
-import { GrCurrency } from "react-icons/gr";
+import { Avatar } from "@mui/material";
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { GrCurrency, GrCursor } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "../context/CurrencyContext";
+import { useLogin } from "../context/LoginContext";
+import LoginModal from "./Modal/LoginModal";
 const NavBar = () => {
   const navigate= useNavigate();
   const {selectedCurrency, updatedCurrency} = useCurrency();
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+ 
   const usd = 0.012;
   const euro = 0.011;
   const inr_symbol = " ₹"
+  const {loginState, updateLoginState} = useLogin()
 
+ 
   const handleCurrencyChange = (e)=>{
     const currency = e.target.value;
     updatedCurrency(currency)
   }
 
+  const handleLoginClick = () => {
+    setLoginModalOpen(true);
+  };
+
+  const closeLoginModal = () => {
+    setLoginModalOpen(false);
+  };
+  const handleLogout = () => {
+    localStorage.clear();
+    updateLoginState(false); 
+  };
+
+
+  useEffect(() => {
+    const login = () => {
+      const isLoggedIn = localStorage.getItem("login");
+      updateLoginState(!!isLoggedIn); 
+    };
+  
+    login();
+  }, [loginState]);
 
   return (
     <div className="flex justify-between py-4 bg-[#f5f9ff] shadow-md items-center px-40">
@@ -58,11 +87,23 @@ const NavBar = () => {
             </option>
           </select>
         </div>
+        {loginState ? (
+          <div className="cursor-pointer">
+          <Avatar onClick={handleLogout} /></div>
+        ) : (
+          <button
+            onClick={handleLoginClick}
+            className="border-solid border-2 border-indigo-600 py-2 px-4 rounded-md transition duration-300 ease-in-out hover:bg-indigo-600 hover:text-white"
+          >
+            Login
+          </button>
+        )}
 
-        <button className="border-solid border-2 border-indigo-600 py-2 px-4 rounded-md transition duration-300 ease-in-out hover:bg-indigo-600 hover:text-white">
-          Login
-        </button>
+        
       </div>
+      {isLoginModalOpen && (
+        <LoginModal onClose={closeLoginModal} />
+      )}
     </div>
   );
 };

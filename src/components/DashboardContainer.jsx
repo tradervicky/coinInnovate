@@ -3,13 +3,13 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { HiArrowCircleRight } from "react-icons/hi";
+import { fetchCryptoData } from "../config/apiUtils";
 import { useCurrency } from "../context/CurrencyContext";
 import Card from "./Card";
 const DashboardContainer = () => {
   const [crypto, setCrypto] = useState(Array(12).fill(null));
   const [cryptoData, setCryptoData] = useState(null);
   const [input, setInput] = useState("bitcoin")
- 
   const [searchData, setSearchData]= useState({
     name:"Bitcoin",
     price:"20000",
@@ -35,24 +35,40 @@ const convertPrice = (price) => {
 
 
 //end
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/data");
-        setCryptoData(response?.data);
-        console.log(response?.data);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-      }
-    };
 
-    fetchData();
-  }, []);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const endpoint = '/coins/markets?vs_currency=inr';
+      const data = await fetchCryptoData(endpoint);
+      setCryptoData(data);
+    } catch (error) {
+      console.error('Error fetching crypto data:', error);
+    }
+  };
+
+  fetchData();
+}, []);
+
+// from db.json change cryptoData[0] for mapping
+
+// useEffect(()=>{
+//   const fetchData = async ()=>{
+//     try{
+//       const response = await axios.get(" http://localhost:8000/data")
+//       setCryptoData(response?.data)
+//       console.log(response?.data)
+//     }catch(err){
+//       console.log(err)
+//     }
+//   }
+//   fetchData()
+// },[])
 
   useEffect(() => {
     const fillData = () => {
       if (cryptoData && cryptoData.length > 0) {
-        setCrypto(cryptoData[0]?.slice(0, 12)); 
+        setCrypto(cryptoData?.slice(0, 12)); 
       }
     };
     fillData();
@@ -60,7 +76,7 @@ const convertPrice = (price) => {
   useEffect(() => {
     const findCrypto = async () => {
       if (cryptoData && cryptoData.length > 0) {
-        const foundData = cryptoData[0].find((data) => data.name.toLowerCase() === input.toLowerCase());
+        const foundData = cryptoData.find((data) => data.name.toLowerCase() === input.toLowerCase());
         if (foundData) {
           setSearchData({
             name: foundData.name,
@@ -128,6 +144,8 @@ const convertPrice = (price) => {
         
         )
       }
+
+     
    
     </div>
     </div>

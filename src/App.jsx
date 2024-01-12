@@ -1,4 +1,5 @@
 
+import { Toaster } from 'react-hot-toast'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Coin from './components/Coin'
@@ -10,6 +11,7 @@ function App() {
 
   return (
     <>
+    <Toaster />
     <BrowserRouter>
     <NavBar/>
     <Routes>

@@ -6,12 +6,6 @@ import { fetchCryptoData } from '../config/apiUtils';
 import { useCurrency } from '../context/CurrencyContext';
 import LineChart from './LineChart';
 function Coin() {
-
-
-
-  
-  
-   
   return (
     <div className='flex mx-40 '>
         <div className="mt-10 flex flex-col gap-4 w-[30%] border-r-2 ">

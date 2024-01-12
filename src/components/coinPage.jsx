@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { IoMdArrowDropupCircle } from "react-icons/io";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import { fetchCryptoData } from '../config/apiUtils';
 import { useCurrency } from '../context/CurrencyContext';
 const CoinPage = () => {
   const navigate = useNavigate()
@@ -41,31 +42,34 @@ const currencySymbol = (symbol)=>{
 }
 
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const endpoint = '/coins/markets?vs_currency=inr';
-  //       const data = await fetchCryptoData(endpoint);
-  //       setCryptoData(data);
-  //     } catch (error) {
-  //       console.error('Error fetching crypto data:', error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-  useEffect(()=>{
-    const fetchData = async ()=>{
-      try{
-        const response = await axios.get(" http://localhost:8000/data")
-        setCryptoData(response?.data)
-        console.log(response?.data)
-      }catch(err){
-        console.log(err)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const endpoint = '/coins/markets?vs_currency=inr';
+        const data = await fetchCryptoData(endpoint);
+        setCryptoData(data);
+      } catch (error) {
+        console.error('Error fetching crypto data:', error);
       }
-    }
-    fetchData()
-  },[])
+    };
+
+    fetchData();
+  }, []);
+
+  // from db.json change cryptoData[0] for mapping
+
+  // useEffect(()=>{
+  //   const fetchData = async ()=>{
+  //     try{
+  //       const response = await axios.get(" http://localhost:8000/data")
+  //       setCryptoData(response?.data)
+  //       console.log(response?.data)
+  //     }catch(err){
+  //       console.log(err)
+  //     }
+  //   }
+  //   fetchData()
+  // },[])
   const handleCoin = (id)=>{
     
     
@@ -85,7 +89,7 @@ const currencySymbol = (symbol)=>{
           </tr>
         </thead>
         <tbody>
-          {cryptoData && cryptoData[0]?.slice(page-1,page+9).map((data, index)=>
+          {cryptoData && cryptoData?.slice(page-1,page+9).map((data, index)=>
           <tr className='bg-gray-100' key={index} onClick={()=>handleCoin(data.id)}>
              
             <td className='py-2 px-4 border-b text-gray-800 text-left flex items-center gap-2 cursor-pointer'>
