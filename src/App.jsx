@@ -15,9 +15,9 @@ function App() {
     <BrowserRouter>
     <NavBar/>
     <Routes>
-      <Route path='/' element={<DashboardContainer/>}/>
-      <Route path='/coins' element={ <CoinPage/>}/>
-      <Route path='/coin' element={  <Coin/>}/>
+    <Route path='/coins' element={<CoinPage />} />
+  <Route path='/coins/:id' element={<Coin />} />
+  <Route path='/' element={<DashboardContainer />} />
     </Routes>
       </BrowserRouter>
     </>

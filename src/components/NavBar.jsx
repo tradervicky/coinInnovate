@@ -13,7 +13,7 @@ const NavBar = () => {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
  
   const usd = 0.012;
-  const euro = 0.011;
+  const eur = 0.011;
   const inr_symbol = " ₹"
   const {loginState, updateLoginState} = useLogin()
 
@@ -82,14 +82,17 @@ const NavBar = () => {
               USD
             </option>
             
-            <option value="euro" className="cursor-pointer">
+            <option value="eur" className="cursor-pointer">
               Euro
             </option>
           </select>
         </div>
         {loginState ? (
-          <div className="cursor-pointer">
-          <Avatar onClick={handleLogout} /></div>
+          <div className="cursor-pointer flex flex-col items-center gap-1 ml-4">
+          <Avatar onClick={handleLogout} />
+          <p onClick={handleLogout} className="text-md font-semibold text-red-600">Logout</p>
+          </div>
+
         ) : (
           <button
             onClick={handleLoginClick}

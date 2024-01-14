@@ -1,147 +1,94 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+// import { Line } from 'react-chartjs-2';
+import { fetchCryptoData } from '../config/apiUtils';
 import { useCurrency } from '../context/CurrencyContext';
 
-function LineChart() {
-  const [historicalData, setHistoricalData] = useState([]);
-  const [days, setDays] = useState(1);
-  const { currency } = useCurrency();
+//chart
 
-  const fetchHistoricalData = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/prices");
-      setHistoricalData(response?.data);
-    } catch (error) {
-      console.error("Error fetching historical data:", error);
-    }
-  };
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  elements,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+//chart end
+
+function LineChart({idCoin,selectedCurrency}) {
+  const [historicalData, setHistoricalData] = useState([]);
+  const [days, setDays] = useState(365);
+  
+  
 
   useEffect(() => {
-    fetchHistoricalData();
-  }, []);
+    const fetchHistoricalData = async (id) => {
+      try {
+        const endpoint = `/coins/${id}/market_chart?vs_currency=${selectedCurrency}&days=${days}`;
+        const data = await fetchCryptoData(endpoint);
+        setHistoricalData(data?.prices);
+      } catch (error) {
+        console.error('Error fetching crypto data:', error);
+      }
+    };
+    fetchHistoricalData(idCoin);
+  }, [selectedCurrency]);
 
-  const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
-    return date.getHours() > 12
-      ? `${date.getHours() - 12}:${date.getMinutes()} PM`
-      : `${date.getHours()}:${date.getMinutes()} AM`;
-  };
-
+  
   const updateChart = (numDays) => {
     setDays(numDays);
   };
+  const myData = {
+    labels: historicalData.map((data, index) => {
+      const date = new Date(data[0]);
+      return days === 1 ? date.toLocaleTimeString() : date.toLocaleDateString();
+    }),
+    datasets: [
+      {
+        label: `Price in Past ${days} Days`,
+        data: historicalData.map((value) => value[1]),
+        borderColor: 'orange',
+        borderWidth: 3,
+      },
+    ],
+  };
+  
 
   return (
     <div>
-      {historicalData && historicalData?.length > 0 ? (
-        <Line
-          data={{
-            labels: historicalData?.map((coin) => {
-              return days === 1 ? formatTime(coin[0]) : new Date(coin[0]).toLocaleDateString();
-            }),
-            datasets: [
-              {
-                data: historicalData?.map((coin) => coin[1]),
-                label: `Price (Past ${days} Days) in ${currency}`,
-                borderColor: "#EEBC1D",
-              },
-            ],
-          }}
-          options={{
-            elements: {
-              point: {
-                radius: 1,
-              },
-            },
-          }}
-        />
-      ) : (
-        <p>Loading or no data available</p>
-      )}
-      <button onClick={() => updateChart(1)}>24 Hours</button>
-      <button onClick={() => updateChart(30)}>30 Days</button>
-      <button onClick={() => updateChart(90)}>3 Months</button>
-      <button onClick={() => updateChart(365)}>1 Year</button>
+      <Line
+      data={myData}
+      options={{
+        elements: {
+          point:{
+            radius:1
+          }
+        }}
+      }
+      />
+   
+      <button className='px-4 py-2 bg-orange-600 rounded ml-2 mt-1 text-white font-medium' onClick={() => updateChart(1)}>1 Days</button>
+      <button className='px-4 py-2 bg-orange-600 rounded ml-2 mt-1 text-white font-medium' onClick={() => updateChart(30)}>30 Days</button>
+      <button className='px-4 py-2 bg-orange-600 rounded ml-2 mt-1 text-white font-medium' onClick={() => updateChart(365)}>1 Year</button>
     </div>
   );
 }
 
 export default LineChart;
-
-
-
-// import axios from 'axios'
-// import React, { useEffect } from 'react'
-// import { useState } from 'react'
-// import { Line } from 'react-chartjs-2';
-// import Chart from 'chart.js/auto';
-// import { useCurrency } from '../context/CurrencyContext';
-// function LineChart() {
-//     const [completeData, setCompleteData] =useState([]);
-//     // const [chartPrice, setChartPrice] = useState({
-//     //     labels: completeData.prices.map((data)=>data),
-//     //     datasets: []
-//     // })
-//     const [historicalData, setHistoricalData] = useState();
-//     const [days, setDays] = useState(1)
-//    const {currency} = useCurrency();
-//    const fetchHistoricalData = async ()=>{
-//     const response = await axios.get("http://localhost:8000/prices")
-//     setHistoricalData(response?.data)
-//    }
-//    useEffect(()=>{
-//     fetchHistoricalData()
-//    },[])
-
-//     // const chartURL ="https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=inr&days=max"
-    
-    
-//     // const fetchChart = async ()=>{
-//     //     const response = await axios?.get(chartURL)
-//     //     setCompleteData(response?.data)
-//     // }
-//     // useEffect(()=>{
-//     //     fetchChart()
-//     // },[])
-//     // console.log(completeData)
-//     console.log(historicalData)
-//   return (
-//     <div>
-//        {/* <Line
-//        data={{
-//         labels: historicalData?.map((coin)=>{
-//           let date = new Date(coin[0]);
-//           let time = 
-//           date.getHours() > 12
-//           ? ` ${date?.getHours()-12} : ${date.getMinutes()} PM`
-//           :  ` ${date.getHours() } : ${date.getMinutes()} AM`
-//           return days === 1 ? time : date.toLocaleDateString
-
-//         }),
-//         datasets : [
-//          { data: historicalData.map((coin)=>coin[1]),
-//           label: `Price (Past ${days} Days) in ${currency}`,
-//       borderColor: "#EEBC1D",
-//         }
-//         ]
-//        }}
-//        options={
-//         {
-//           elements: {
-//             point: {
-//               radius: 1,
-//             },
-//           },
-//         }
-//        }
-//        /> */}
-//        <button>24 Hours</button>
-//             <button>30 Days</button>
-//             <button>3 Months</button>
-//             <button>1 Years</button>
-//     </div>
-//   )
-// }
-
-// export default LineChart
