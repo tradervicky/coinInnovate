@@ -14,6 +14,8 @@ function Coin() {
   const [currentPrice, setCurrentPrice] = useState()
   const [marketCap, setMarketCap] = useState()
   const [desc, setDesc] = useState("")
+  const [imageURL, setImageURL] = useState("")
+
   useEffect(() => {
     const fetchHistoricalData = async (id) => {
       try {
@@ -24,6 +26,8 @@ function Coin() {
         setCurrentPrice(data?.market_data?.current_price?.[selectedCurrency])
         setMarketCap(data?.market_data?.market_cap?.[selectedCurrency])
         setDesc(historicalData?.description.en.split('.')[0])
+        setImageURL(historicalData?.image.large)
+        console.log(imageURL)
       } catch (error) {
         console.error('Error fetching crypto data:', error);
       }
@@ -46,7 +50,7 @@ function Coin() {
   return (
     <div className='flex mx-40 '>
         <div className="mt-10 flex flex-col gap-4 w-[30%] border-r-2 ">
-            <img className='w-40 h-40 mx-auto' src={historicalData.image.large} alt="" />
+            <img className='w-40 h-40 mx-auto' src={imageURL} alt="image" />
             <h3 className='text-3xl font-bold text-center'>{historicalData.name}</h3>
             <span className='text-lg font-medium px-5'>{desc}.</span>
             <h4 className='text-xl font-bold px-5'>Rank : {historicalData.market_cap_rank}</h4>

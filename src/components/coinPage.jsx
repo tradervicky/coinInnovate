@@ -7,6 +7,7 @@ import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchCryptoData } from '../config/apiUtils';
 import { useCurrency } from '../context/CurrencyContext';
+import { IoStar } from "react-icons/io5";
 const CoinPage = () => {
   
   const [cryptoData, setCryptoData] = useState(null);
@@ -80,6 +81,7 @@ const currencySymbol = (symbol)=>{
 
           <tr>
           
+            <th className='py-2 px-4 border-b font-bold uppercase text-sm text-gray-700 text-left'>#</th>
             <th className='py-2 px-4 border-b font-bold uppercase text-sm text-gray-700 text-left'>Coins</th>
             <th className='py-2 px-4 border-b font-bold uppercase text-sm text-gray-700 text-left'>Current Price</th>
             <th className='py-2 px-4 border-b font-bold uppercase text-sm text-gray-700 text-left'>24h Change</th>
@@ -87,20 +89,22 @@ const currencySymbol = (symbol)=>{
           </tr>
         </thead>
         <tbody>
+        <td className='py-2 px-4 border-b text-gray-800 text-left cursor-pointer text-black'><IoStar/></td>
           {cryptoData && cryptoData?.slice(page-1,page+9).map((data, index)=>
-          <Link to={`/coins/${data.id}`} style={{color:"white", textDecoration:'none'}} >
           <tr className='bg-gray-100' key={index}>
+            <td className='py-2 px-4 border-b text-gray-800 text-left'><IoStar/></td>
+          <Link to={`/coins/${data.id}`} style={{color:"white", textDecoration:'none'}} >
              
             <td className='py-2 px-4 border-b text-gray-800 text-left flex items-center gap-2 cursor-pointer'>
               <img className='w-10 h-10 rounded-full' src={data?.image} alt="" />
               {data.name}
             </td>
-           
+            </Link>
             <td className='py-2 px-4 border-b text-gray-800 text-left'>{currencySymbol(selectedCurrency)}{convertPrice(data?.current_price)}</td>
             <td className={`py-2 flex px-4 border-b text-left ${data.price_change_percentage_24h < 0 ? 'text-red-500' : 'text-green-500'}`}>{data.price_change_percentage_24h < 0 ?  <IoMdArrowDropdownCircle size={24}/>: <IoMdArrowDropupCircle size={24}/> }{data?.price_change_percentage_24h.toFixed(2)}%</td>
             <td className='py-2 px-4 border-b text-gray-800 text-left'>{currencySymbol(selectedCurrency)}{convertPrice(data?.market_cap)}</td>
           </tr>
-          </Link>
+          
           )}
           
           
